@@ -18,7 +18,7 @@
 <section class="card"><h2>Saved clients</h2><p class="muted">Your client records are stored on this computer.</p><div id="clientList"></div><p class="foot">Client editing and service rates are coming in later slices.</p></section></div></main>
 <script>
 const form=document.getElementById('clientForm'),check=document.getElementById('gstRegistered'),group=document.getElementById('gstinGroup'),msg=document.getElementById('message');
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;':'&quot;',"'":'&#39;'}[c]));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toggleGST(){group.classList.toggle('hidden',!check.checked);document.getElementById('gstin').required=check.checked;}
 check.addEventListener('change',toggleGST);form.addEventListener('reset',()=>{setTimeout(toggleGST,0);msg.textContent='';});
 async function loadClients(){try{const res=await fetch('/api/clients');if(!res.ok)throw Error('Cannot load clients');const clients=await res.json();document.getElementById('total').textContent=clients.length;document.getElementById('clientList').innerHTML=clients.length?clients.map(c=>'<div class="client"><div class="client-title"><span>'+esc(c.name)+'</span><span class="chip">'+(c.gst_registered?'GST registered':'No GSTIN')+'</span></div><p class="address">'+esc(c.billing_address)+'<br>'+esc(c.place_of_supply)+', '+esc(c.state)+'</p></div>').join(''):'<div class="empty">No clients yet<br>Add your first client using the form.</div>';}catch(e){msg.textContent=e.message;msg.className='message error';}}
